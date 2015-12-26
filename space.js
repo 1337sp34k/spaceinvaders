@@ -13,33 +13,7 @@ this.invaderHeight = 10;
 this.invaderWidth = 25;
 this.invaderDx = 5;
 this.invaderDy = this.invaderGap + this.invaderHeight;
-
 //game loop
-function gameLoop(){
-  if(!gameOver(gameState)) {
-    updateGame();
-    drawGame();
-  }
-}
-
-function updateGame(){
-  //ship updated by key handler
-  updateMissiles();
-  //updateInvaders();
-}
-
-function drawGame(){
-  //ship drawn by key handler
-  drawMissiles();
-  //drawInvaders();
-}
-
-function gameOver(){
-  false;
-}
-function gameState(){
-  true;
-}
 
 /***************************************************
 * Ship code --
@@ -50,7 +24,6 @@ function Ship(x){
   this.height = 20
   this.width = 25
 }
-
 this.ship = new Ship(this.maxX/2)
 
 //move ship
@@ -60,10 +33,10 @@ function moveShip(dist){
     this.ship.x = 0
   }
   else if (this.ship.x > this.maxX - this.ship.width) {
-    this.ship.x = this.maxX - this.ship.width;
+    this.ship.x = this.maxX - this.ship.width
+
   }
 }
-
 //draw ship
 function drawShip(){
   //get canvas
@@ -73,10 +46,7 @@ function drawShip(){
   context.clearRect(0, this.maxY-this.ship.height, this.maxX, this.ship.height);
   //draw ship
   context.fillStyle = 'black';
-  context.fillRect(this.ship.x,
-    this.maxY-this.ship.height,
-    this.ship.width,
-    this.ship.height);
+  context.fillRect(this.ship.x, this.maxY-this.ship.height, this.ship.width, this.ship.height);
 }
 drawShip();
 
@@ -90,17 +60,8 @@ function Missile(x, y){
   this.x = x;
   this.y = y;
 }
-//update missiles
-function updateMissile(missile){
-  //move missile by dy
-  missile.y -= this.missileV;
-}
 
-function updateMissiles(){
-  for (var missile in this.missArr) {
-    updateMissile(missile);
-  }
-}
+
 
 //draw misiles
 function drawMissile(missile){
@@ -109,15 +70,11 @@ function drawMissile(missile){
   context.fillStyle = 'red';
   context.fillRect(missile.x, missile.y, this.missWidth, this.missHeight);
 }
-function drawMissiles(){
-  for (var missile in this.missArr) {
-    drawMissile(missile);
-  }
-}
 /***************************************************
 * Invader code --
 ***************************************************/
-function Invader(r, c) {
+function Invader(r, c){
+
   this.alive = true;
   this.row = r;
   this.col = c;
@@ -125,8 +82,9 @@ function Invader(r, c) {
 
 function invadeArrs(){
   var rankFile = [];
-}
 
+
+}
 //draw invaders
 function drawInvader(x, y){
   var canvas = document.getElementsByTagName('canvas')[0];
@@ -158,5 +116,3 @@ function checkKey(event){
       drawMissile(missile);
   }
 }
-// drawShip();
-// setInterval(function () {gameLoop();}, 1000);
