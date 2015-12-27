@@ -15,6 +15,29 @@ this.invaderDx = 5;
 this.invaderDy = this.invaderGap + this.invaderHeight;
 //game loop
 
+function updateGame(){
+  //ship updated by key handler
+  updateMissiles();
+  //updateInvaders();
+}
+
+function drawGame(){
+  //ship drawn by key handler
+  var canvas = document.getElementsByTagName('canvas')[0];
+  var context = canvas.getContext('2d');
+  context.clearRect(0, 0, this.maxX, this.maxY);
+  drawShip();
+  drawMissiles();
+  //drawInvaders();
+}
+
+function gameOver(){
+  false;
+}
+function gameState(){
+  true;
+}
+
 /***************************************************
 * Ship code --
 ***************************************************/
@@ -61,6 +84,11 @@ function Missile(x, y){
   this.y = y;
 }
 
+function updateMissiles(){
+  for (nextMissile in this.missArr) {
+    updateMissile(this.missArr[nextMissile]);
+  }
+}
 
 
 //draw misiles
@@ -69,6 +97,11 @@ function drawMissile(missile){
   var context = canvas.getContext('2d');
   context.fillStyle = 'red';
   context.fillRect(missile.x, missile.y, this.missWidth, this.missHeight);
+}
+function drawMissiles(){
+  for (nextMissile in this.missArr) {
+    drawMissile(this.missArr[nextMissile]);
+  }
 }
 /***************************************************
 * Invader code --
@@ -116,3 +149,5 @@ function checkKey(event){
       drawMissile(missile);
   }
 }
+drawShip();
+setInterval(function () {gameLoop();}, 1000);
