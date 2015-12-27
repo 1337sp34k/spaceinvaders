@@ -13,6 +13,9 @@ this.invaderHeight = 10;
 this.invaderWidth = 25;
 this.invaderDx = 5;
 this.invaderDy = this.invaderGap + this.invaderHeight;
+this.invaderMaxRow = 5;
+this.invaderMaxCol = 6;
+this.invaderArr = [];
 
 //game loop
 function gameLoop(){
@@ -121,22 +124,40 @@ function drawMissiles(){
 /***************************************************
 * Invader code --
 ***************************************************/
-function Invader(r, c) {
+function Invader() {
   this.alive = true;
-  this.row = r;
-  this.col = c;
+}
+function createInvaders(){
+  for (row = 0; row < this.invaderMaxRow; row++){
+    allCols = [];
+    for(col = 0; col < this.invaderMaxCol; col++){
+      allCols.push(new Invader());
+    }
+    this.invaderArr.push(allCols);
+  }
 }
 
-function invadeArrs(){
-  var rankFile = [];
+
+
+//draw invader
+function drawInvaders(x, y){
+  for (row = 0; row < this.invaderMaxRow; row++){
+    for(col = 0; col < this.invaderMaxCol; col++){
+      drawInvader(this.invaderArr[row][col],
+        x + (this.invaderGap + this.invaderWidth) * col,
+        y + (this.invaderGap + this.invaderHeight) * row);
+    }
+  }
 }
 
-//draw invaders
-function drawInvader(x, y){
-  var canvas = document.getElementsByTagName('canvas')[0];
-  var context = canvas.getContext('2d');
-  context.fillStyle = 'green';
-  context.fillRect(x, y, this.invaderWidth, this.invaderHeight);
+//draw invader
+function drawInvader(invader, x, y){
+  if (invader.alive){
+    var canvas = document.getElementsByTagName('canvas')[0];
+    var context = canvas.getContext('2d');
+    context.fillStyle = 'green';
+    context.fillRect(x, y, this.invaderWidth, this.invaderHeight);
+  }
 }
 
 //create 2d array of invaders
