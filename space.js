@@ -4,18 +4,23 @@ window.onkeydown = checkKey;
 var canvas = document.getElementsByTagName('canvas')[0];
 this.maxX = canvas.width;
 this.maxY = canvas.height;
-this.missileV = 20;
+this.missileV = 60;
 this.missArr = [];
 this.missHeight = 10;
 this.missWidth = 2;
 this.invaderGap = 5;
 this.invaderHeight = 10;
 this.invaderWidth = 25;
-this.invaderDx = 5;
+this.invaderDx = 10;
 this.invaderDy = this.invaderGap + this.invaderHeight;
 this.invaderMaxRow = 5;
 this.invaderMaxCol = 6;
 this.invaderArr = [];
+this.invaderInitX = 100;
+this.invaderInitY = 100;
+this.invaderX = 100;
+this.invaderY = 100;
+this.direction = 1;
 
 //game loop
 function gameLoop(){
@@ -28,7 +33,7 @@ function gameLoop(){
 function updateGame(){
   //ship updated by key handler
   updateMissiles();
-  //updateInvaders();
+  updateInvaders();
 }
 
 function drawGame(){
@@ -38,7 +43,7 @@ function drawGame(){
   context.clearRect(0, 0, this.maxX, this.maxY);
   drawShip();
   drawMissiles();
-  //drawInvaders();
+  drawInvaders(this.invaderX, this.invaderY);
 }
 
 function gameOver(){
@@ -49,7 +54,7 @@ function gameState(){
 }
 
 /***************************************************
-* Ship code --
+* Ship code
 ***************************************************/
 //create ship
 function Ship(x){
@@ -91,7 +96,7 @@ drawShip();
 //create missiles
 
 /***************************************************
-* Missile code --
+* Missile code
 ***************************************************/
 function Missile(x, y){
   this.x = x;
@@ -122,11 +127,12 @@ function drawMissiles(){
   }
 }
 /***************************************************
-* Invader code --
+* Invader code
 ***************************************************/
 function Invader() {
   this.alive = true;
 }
+//flls invader array
 function createInvaders(){
   for (row = 0; row < this.invaderMaxRow; row++){
     allCols = [];
@@ -137,6 +143,48 @@ function createInvaders(){
   }
 }
 
+//update invaders
+function updateInvaders(){
+  //move invader array
+  this.invaderX += this.invaderDx * this.direction;
+  //this.invaderY += this.invaderDy;
+
+  //check if hit side(change direction)
+  if (hitWall()){
+    this.direction *= -1;
+    this.invaderY += this.invaderDy;
+  }
+  this.invaderX += this.invaderDx * this.direction;
+
+  //check if hit bottom
+}
+
+function hitWall(){
+  if (this.direction == 1) {
+    for (var col = this.invaderMaxCol - 1; col >= 0; col--) {
+      for (var row = 0; row < this.invaderMaxRow; row++) {
+        var invader = this.invaderArr[row][col];
+        if (invader.alive) {
+          if (this.maxX - (this.invaderX + (this.invaderGap + this.invaderWidth) * col) - this.invaderWidth <= 0){
+            return true;
+          }
+        }
+      }
+    }
+  } else if (this.direction == -1) {
+    for (var col = 0; col < this.invaderMaxCol; col++) {
+      for (var row = 0; row < this.invaderMaxRow; row++) {
+        var invader = this.invaderArr[row][col];
+        if (invader.alive) {
+          if ((this.invaderX + (this.invaderGap + this.invaderWidth) * col) <=0){
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
 
 
 //draw invader
@@ -184,4 +232,5 @@ function checkKey(event){
   }
 }
 drawShip();
-setInterval(function () {gameLoop();}, 1000);
+createInvaders();
+setInterval(function () {gameLoop();}, 2000);
