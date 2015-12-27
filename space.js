@@ -30,6 +30,10 @@ function updateGame(){
 
 function drawGame(){
   //ship drawn by key handler
+  var canvas = document.getElementsByTagName('canvas')[0];
+  var context = canvas.getContext('2d');
+  context.clearRect(0, 0, this.maxX, this.maxY);
+  drawShip();
   drawMissiles();
   //drawInvaders();
 }
@@ -97,8 +101,8 @@ function updateMissile(missile){
 }
 
 function updateMissiles(){
-  for (var missile in this.missArr) {
-    updateMissile(missile);
+  for (nextMissile in this.missArr) {
+    updateMissile(this.missArr[nextMissile]);
   }
 }
 
@@ -110,8 +114,8 @@ function drawMissile(missile){
   context.fillRect(missile.x, missile.y, this.missWidth, this.missHeight);
 }
 function drawMissiles(){
-  for (var missile in this.missArr) {
-    drawMissile(missile);
+  for (nextMissile in this.missArr) {
+    drawMissile(this.missArr[nextMissile]);
   }
 }
 /***************************************************
@@ -158,5 +162,5 @@ function checkKey(event){
       drawMissile(missile);
   }
 }
-// drawShip();
-// setInterval(function () {gameLoop();}, 1000);
+drawShip();
+setInterval(function () {gameLoop();}, 1000);
