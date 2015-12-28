@@ -4,27 +4,110 @@ window.onkeydown = checkKey;
 var canvas = document.getElementsByTagName('canvas')[0];
 this.maxX = canvas.width;
 this.maxY = canvas.height;
-this.missileV = 60;
+this.missileV = 5;
 this.missArr = [];
 this.missHeight = 10;
 this.missWidth = 2;
 this.invaderGap = 5;
 this.invaderHeight = 10;
 this.invaderWidth = 25;
-this.invaderDx = 10;
-this.invaderDy = this.invaderGap + this.invaderHeight;
-this.invaderMaxRow = 5;
-this.invaderMaxCol = 6;
+this.invaderDx = 1;
+this.invaderDy = 5/*this.invaderGap + this.invaderHeight*/;
+this.invaderMaxRow = 3;
+this.invaderMaxCol = 3;
 this.invaderArr = [];
 this.invaderInitX = 100;
 this.invaderInitY = 100;
 this.invaderX = 100;
-this.invaderY = 100;
+this.invaderY = 300;
 this.direction = 1;
+//this.gameOver = false;
+this.intervalID = 0;
+
+function missileHits(){
+  for (row = 0; row < this.invaderMaxRow; row++){
+    for(col = 0; col < this.invaderMaxCol; col++){
+      if (this.invaderArr[row][col].alive) {
+        for (nextMissile in this.missArr) {
+          if (rectOver(this.invaderX + (this.invaderGap + this.invaderWidth) * col,
+                  this.invaderY + (this.invaderGap + this.invaderHeight) * row,
+                  this.invaderWidth,
+                  this.invaderHeight,
+                  this.missArr[nextMissile].x,
+                  this.missArr[nextMissile].y,
+                  this.missWidth,
+                  this.missHeight)) {    //check if missile overlaps with invader
+                  // kill invader
+                  this.invaderArr[row][col].alive = false
+                  // remove missile from array
+                  this.missArr.splice(nextMissile, 1);
+          }
+        }
+    }
+    }
+  }
+}
+
+function shipHit(){
+  for (row = 0; row < this.invaderMaxRow; row++){
+    for (col = 0; col < this.invaderMaxCol; col++){
+        if (rectOver(this.invaderX + (this.invaderGap + this.invaderWidth) * col,
+                this.invaderY + (this.invaderGap + this.invaderHeight) * row,
+                this.invaderWidth,
+                this.invaderHeight,
+                this.ship.x,
+                this.maxY-this.ship.height,
+                this.ship.width,
+                this.ship.height)) {  //game over
+                return true;
+        }
+      }
+    }
+  return false;
+}
+function hitBottom(){
+  if (this.direction == 1) {
+    for (var col = this.invaderMaxCol - 1; col >= 0; col--) {
+      for (var row = 0; row < this.invaderMaxRow; row++) {
+        var invader = this.invaderArr[row][col];
+        if (invader.alive) {
+          if (this.maxy - (this.invadery + (this.invaderGap + this.invaderHeight) * col) - this.invaderHeight <= 500){
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function noInvade(){
+  for (row = 0; row < this.invaderMaxRow; row++){
+    for(col = 0; col < this.invaderMaxCol; col++){
+      if(this.invaderArr[row][col].alive) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+
+
+
+function rectOver(x1, y1, w1, h1, x2, y2, w2, h2){
+  if (x2 < x1 + w1 && x1 < x2 + w2 && y2 < y1 + h1)
+    return y1 < y2 + h2;
+  else
+    return false;
+}
 
 //game loop
-function gameLoop(){
-  if(!gameOver(gameState)) {
+function gameLoop() {
+  if(gameOver()) {
+    clearInterval(this.intervalID);
+    console.log("Game over!");
+  } else {
     updateGame();
     drawGame();
   }
@@ -32,6 +115,7 @@ function gameLoop(){
 
 function updateGame(){
   //ship updated by key handler
+  missileHits();
   updateMissiles();
   updateInvaders();
 }
@@ -47,8 +131,9 @@ function drawGame(){
 }
 
 function gameOver(){
-  false;
+  return shipHit() || noInvade() || hitBottom()
 }
+
 function gameState(){
   true;
 }
@@ -157,6 +242,8 @@ function updateInvaders(){
   this.invaderX += this.invaderDx * this.direction;
 
   //check if hit bottom
+
+  //check if hit missile
 }
 
 function hitWall(){
@@ -176,7 +263,8 @@ function hitWall(){
       for (var row = 0; row < this.invaderMaxRow; row++) {
         var invader = this.invaderArr[row][col];
         if (invader.alive) {
-          if ((this.invaderX + (this.invaderGap + this.invaderWidth) * col) <=0){
+          if ((this.invaderX + this.invaderWidth * col) <=0){
+            this.invaderX = 0;
             return true;
           }
         }
@@ -215,12 +303,12 @@ function checkKey(event){
   event = event || window.event;
   if (event.keyCode == '37'){
     //move ship left
-    moveShip(-10);
+    moveShip(-20);
     drawShip();
   }
   else if (event.keyCode == '39') {
     //move ship right
-    moveShip(10);
+    moveShip(20);
     drawShip();
   }
   else if (event.keyCode == '32') {
@@ -233,4 +321,4 @@ function checkKey(event){
 }
 drawShip();
 createInvaders();
-setInterval(function () {gameLoop();}, 2000);
+this.intervalID = setInterval(function () {gameLoop();}, 10);
