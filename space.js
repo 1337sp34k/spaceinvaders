@@ -106,6 +106,11 @@ function rectOver(x1, y1, w1, h1, x2, y2, w2, h2){
 function gameLoop() {
   if(gameOver()) {
     clearInterval(this.intervalID);
+    var canvas = document.getElementsByTagName('canvas')[0];
+    var context = canvas.getContext('2d');
+    context.font = "30px Arial";
+    context.fillStyle = 'blue';
+    context.fillText("Game over!",this.maxX/2-100,this.maxY/2-50);
     console.log("Game over!");
   } else {
     updateGame();
