@@ -18,8 +18,8 @@ this.invaderMaxCol = 6;
 this.invaderArr = [];
 this.invaderInitX = 100;
 this.invaderInitY = 100;
-this.invaderX = 100;
-this.invaderY = 300;
+this.invaderX = 50;
+this.invaderY = 50;
 this.direction = 1;
 //this.gameOver = false;
 this.intervalID = 0;
@@ -303,12 +303,12 @@ function checkKey(event){
   event = event || window.event;
   if (event.keyCode == '37'){
     //move ship left
-    moveShip(-20);
+    moveShip(-15);
     drawShip();
   }
   else if (event.keyCode == '39') {
     //move ship right
-    moveShip(20);
+    moveShip(15);
     drawShip();
   }
   else if (event.keyCode == '32') {
